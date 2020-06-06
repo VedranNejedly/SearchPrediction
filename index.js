@@ -9,16 +9,16 @@ function suggestionTool(currentText){
 
     let allSuggestions = [];
     let suggestionPriority = {};
-    let matchCounter = 0; 
-    for(let i=0; i<content.length; i++){
-        let contentWord = content[i];
-        if(contentWord == words[matchCounter]) matchCounter++;
+    let matchCounter = 0;
+	
+	content.map((contentWord, i, array) =>  {
+		if(contentWord == words[matchCounter]) matchCounter++;
         else matchCounter = 0;
 
-        if(matchCounter == words.length && i+1 < content.length){
+        if(matchCounter == words.length && i+1 < array.length){
             matchCounter = 0;
             let suggestion = words.join(" ");
-            let nextContentWord = content[i+1];
+            let nextContentWord = array[i+1];
             suggestion += " " + nextContentWord;
 
             if(suggestion in suggestionPriority) suggestionPriority[suggestion]++;
@@ -27,18 +27,17 @@ function suggestionTool(currentText){
                 suggestionPriority[suggestion] = 1;
             }
         }
-    }
+	});
 
     let sortedSuggestions = allSuggestions.sort(function(first, second) {
         return suggestionPriority[second] - suggestionPriority[first];
     })
     
-    let finalResults = []
-    for(let i=0; i<sortedSuggestions.length; i++){
-        if(i==5) break;
-        console.log(sortedSuggestions[i], "\t|Appears: ", suggestionPriority[sortedSuggestions[i]], "times");
-        finalResults.push(sortedSuggestions[i]);
-    }
+    let finalResults = sortedSuggestions.slice(0,5);
+    finalResults.forEach(suggestion => {
+		console.log(suggestion, "\t|Appears: ", suggestionPriority[suggestion], "times");
+	});
+	
     return finalResults;
 }
 
